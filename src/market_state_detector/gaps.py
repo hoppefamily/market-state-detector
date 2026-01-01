@@ -71,8 +71,11 @@ def detect_gap_from_prices(
     Raises:
         ValueError: If lists are too short or mismatched
     """
-    if len(closes) < 2 or len(opens) < 1:
-        raise ValueError("Need at least 2 closes and 1 open for gap detection")
+    if len(closes) < 2:
+        raise ValueError("Need at least 2 closes for gap detection")
+    
+    if len(opens) < 1:
+        raise ValueError("Need at least 1 open for gap detection")
     
     if len(opens) != len(closes):
         raise ValueError("Opens and closes lists must have same length")

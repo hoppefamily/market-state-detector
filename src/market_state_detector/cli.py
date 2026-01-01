@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional
 
+from . import __version__
 from .detector import MarketStateDetector
 from .config import Config
 
@@ -153,7 +154,7 @@ Note: This tool automates manual checks for market uncertainty.
     parser.add_argument(
         "--version",
         action="version",
-        version="market-state-detector 0.1.0"
+        version=f"market-state-detector {__version__}"
     )
     
     args = parser.parse_args()

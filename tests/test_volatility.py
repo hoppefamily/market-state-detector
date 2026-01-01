@@ -14,8 +14,12 @@ def test_calculate_daily_returns():
     returns = calculate_daily_returns(prices)
     
     assert len(returns) == 3
-    assert abs(returns[0] - 0.02) < 0.0001  # (102-100)/100 = 0.02
-    assert abs(returns[1] - (-0.0098)) < 0.0001  # (101-102)/102 ≈ -0.0098
+    # Calculate expected returns dynamically
+    expected_0 = (102 - 100) / 100  # 0.02
+    expected_1 = (101 - 102) / 102  # ≈ -0.0098
+    
+    assert abs(returns[0] - expected_0) < 0.0001
+    assert abs(returns[1] - expected_1) < 0.0001
 
 
 def test_calculate_daily_returns_empty():

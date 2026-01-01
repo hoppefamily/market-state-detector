@@ -11,15 +11,10 @@ def test_detector_initialization():
     assert detector.config is not None
 
 
-def test_analyze_closes_only():
+def test_analyze_closes_only(sample_stable_prices):
     """Test analysis with only closing prices."""
-    # Prices with realistic volatility
-    closes = [100, 100.5, 99.8, 100.3, 100.1, 100.6, 100.2, 100.8, 100.5, 101.0,
-              100.7, 101.2, 100.9, 101.5, 101.1, 101.7, 101.3, 101.9, 101.6, 102.1,
-              101.8, 102.3, 102.0, 102.5, 102.2]
-    
     detector = MarketStateDetector()
-    results = detector.analyze(closes)
+    results = detector.analyze(sample_stable_prices)
     
     assert 'stage_1_detected' in results
     assert 'signals' in results
@@ -27,15 +22,10 @@ def test_analyze_closes_only():
     assert isinstance(results['stage_1_detected'], bool)
 
 
-def test_analyze_with_spike():
+def test_analyze_with_spike(sample_volatile_prices):
     """Test that volatility spike is detected."""
-    # Prices with realistic volatility then large jump
-    closes = [100, 100.5, 99.8, 100.3, 100.1, 100.6, 100.2, 100.8, 100.5, 101.0,
-              100.7, 101.2, 100.9, 101.5, 101.1, 101.7, 101.3, 101.9, 101.6, 102.1,
-              101.8, 102.3, 102.0, 102.5, 110.0]  # Large spike
-    
     detector = MarketStateDetector()
-    results = detector.analyze(closes)
+    results = detector.analyze(sample_volatile_prices)
     
     assert results['stage_1_detected'] is True
     assert 'volatility_spike' in results['signals']
@@ -69,28 +59,19 @@ def test_analyze_insufficient_data():
         detector.analyze(closes)
 
 
-def test_analyze_simple():
+def test_analyze_simple(sample_stable_prices):
     """Test simple analysis method."""
-    # Prices with realistic volatility
-    closes = [100, 100.5, 99.8, 100.3, 100.1, 100.6, 100.2, 100.8, 100.5, 101.0,
-              100.7, 101.2, 100.9, 101.5, 101.1, 101.7, 101.3, 101.9, 101.6, 102.1,
-              101.8, 102.3, 102.0, 102.5, 102.2]
-    
     detector = MarketStateDetector()
-    result = detector.analyze_simple(closes)
+    result = detector.analyze_simple(sample_stable_prices)
     
     assert isinstance(result, bool)
 
 
-def test_detector_with_custom_config():
+def test_detector_with_custom_config(sample_stable_prices):
     """Test detector with custom configuration."""
     config = Config()
     detector = MarketStateDetector(config)
     
-    # Prices with realistic volatility
-    closes = [100, 100.5, 99.8, 100.3, 100.1, 100.6, 100.2, 100.8, 100.5, 101.0,
-              100.7, 101.2, 100.9, 101.5, 101.1, 101.7, 101.3, 101.9, 101.6, 102.1,
-              101.8, 102.3, 102.0, 102.5, 102.2]
-    results = detector.analyze(closes)
+    results = detector.analyze(sample_stable_prices)
     
     assert 'stage_1_detected' in results
