@@ -32,27 +32,51 @@ pip install -e ".[dev]"
 pip install ib_insync
 ```
 
-### Quick Stock Check (IBKR)
+## Quick Start
 
-For daily symbol checks using IBKR data:
+### Daily Stock Checks (Recommended)
+
+**The simplest way to use the detector** - check stocks before making trading decisions:
 
 ```bash
-python check_stock.py AAPL    # Check specific stock
-python check_stock.py TSLA    # Another stock
+python check_stock.py SPY     # Check market
+python check_stock.py AAPL    # Check your positions
+python check_stock.py TSLA    # Another position
 python check_stock.py         # Defaults to SPY
 ```
 
+**Output example:**
+```
+============================================================
+AAPL - MARKET STATE CHECK
+============================================================
+
+✓ No Stage 1 signals detected. Market behavior appears 
+  within normal parameters.
+
+============================================================
+```
+
+**Requirements:**
+- IB Gateway or TWS running
+- `pip install ib_insync`
+- API connections enabled (see [IBKR Setup Guide](IBKR_SETUP_CHECKLIST.md))
+
+**Exit codes:** 0 (normal), 1 (Stage 1 detected), 2 (error) - useful for scripting.
+
+**Why this approach?** It matches the tool's philosophy: "consulted before making a decision." Quick, focused, daily.
+
+---
+
 ### Testing IBKR Connection
 
-If you plan to use IBKR/CapTrader data integration, run the connection test script:
+Verify your TWS/Gateway setup:
 
 ```bash
 python check_ibkr_connection.py
 ```
 
-This will verify that your TWS/Gateway setup is working correctly.
-
-## Quick Start
+---
 
 ### Python API
 
