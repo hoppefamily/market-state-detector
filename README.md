@@ -32,6 +32,16 @@ pip install -e ".[dev]"
 pip install ib_insync
 ```
 
+### Quick Stock Check (IBKR)
+
+For daily symbol checks using IBKR data:
+
+```bash
+python check_stock.py AAPL    # Check specific stock
+python check_stock.py TSLA    # Another stock
+python check_stock.py         # Defaults to SPY
+```
+
 ### Testing IBKR Connection
 
 If you plan to use IBKR/CapTrader data integration, run the connection test script:
