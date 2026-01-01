@@ -143,6 +143,11 @@ results = detector.analyze(**data)
 
 See [examples/ibkr_usage.py](examples/ibkr_usage.py) for more detailed examples including persistent connections and multiple symbols.
 
+**Note:**
+This project does not redistribute market data.
+Users are responsible for ensuring compliance with their broker
+and market data provider terms.
+
 ### Custom Configuration
 
 ```python
