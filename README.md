@@ -9,6 +9,7 @@ A Python tool that detects high-uncertainty market regimes (Stage 1) using simpl
 - **Volatility Spike Detection**: Identifies abnormal volatility by comparing recent price movements to historical averages
 - **Price Gap Detection**: Flags significant overnight gaps that may indicate market stress
 - **Wide Range Detection**: Detects abnormally wide trading ranges suggesting increased uncertainty
+- **IBKR/CapTrader Integration**: Optional data fetching from Interactive Brokers (see [IBKR Integration Guide](docs/IBKR_INTEGRATION.md))
 - **Modular Design**: Each detection method is independent and can be used separately
 - **Config-Driven**: Easily customize detection thresholds via YAML configuration
 - **CLI Support**: Command-line interface for analyzing CSV data files
@@ -26,7 +27,20 @@ pip install -e .
 
 # Or install with dev dependencies for testing
 pip install -e ".[dev]"
+
+# Optional: Install IBKR data fetching support
+pip install ib_insync
 ```
+
+### Testing IBKR Connection
+
+If you plan to use IBKR/CapTrader data integration, run the connection test script:
+
+```bash
+python check_ibkr_connection.py
+```
+
+This will verify that your TWS/Gateway setup is working correctly.
 
 ## Quick Start
 
@@ -100,6 +114,35 @@ if results['signals']['volatility_spike']['detected']:
     print(f"Volatility spike: {details['spike_magnitude']:.2f}x threshold")
 ```
 
+### IBKR/CapTrader Data Integration (Optional)
+
+The package includes optional support for fetching daily OHLC data directly from Interactive Brokers or CapTrader:
+
+```python
+from market_state_detector import MarketStateDetector
+from market_state_detector.ibkr_data import fetch_ibkr_data
+
+# Fetch data from IBKR (requires ib_insync and TWS/Gateway running)
+data = fetch_ibkr_data('AAPL', days=30, port=7497)
+
+# Analyze directly
+detector = MarketStateDetector()
+results = detector.analyze(**data)
+```
+
+**Requirements for IBKR integration:**
+1. Install ib_insync: `pip install ib_insync`
+2. Have TWS (Trader Workstation) or IB Gateway running
+3. Enable API connections in TWS/Gateway settings (File → Global Configuration → API → Settings)
+
+**Port numbers:**
+- `7497` - TWS paper trading
+- `7496` - TWS live trading
+- `4002` - IB Gateway paper trading
+- `4001` - IB Gateway live trading
+
+See [examples/ibkr_usage.py](examples/ibkr_usage.py) for more detailed examples including persistent connections and multiple symbols.
+
 ### Custom Configuration
 
 ```python
@@ -155,6 +198,7 @@ market-state-detector/
 │       ├── volatility.py        # Volatility spike detection
 │       ├── gaps.py              # Price gap detection
 │       ├── ranges.py            # Wide range detection
+│       ├── ibkr_data.py         # Optional IBKR data fetching
 │       ├── cli.py               # Command-line interface
 │       └── __main__.py          # Module entry point
 ├── tests/                       # Test suite
@@ -168,6 +212,7 @@ market-state-detector/
 │   ├── basic_usage.py
 │   ├── full_ohlc_usage.py
 │   ├── custom_config_usage.py
+│   ├── ibkr_usage.py            # IBKR integration examples
 │   ├── sample_data_with_spike.csv
 │   └── sample_data_stable.csv
 ├── config/
