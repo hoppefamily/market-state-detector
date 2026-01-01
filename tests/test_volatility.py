@@ -47,8 +47,10 @@ def test_calculate_volatility_empty():
 
 def test_detect_volatility_spike_normal():
     """Test detection with normal volatility."""
-    # Stable prices
-    prices = [100 + i * 0.5 for i in range(25)]
+    # Prices with realistic volatility (small random-like movements)
+    prices = [100, 100.5, 99.8, 100.3, 100.1, 100.6, 100.2, 100.8, 100.5, 101.0,
+              100.7, 101.2, 100.9, 101.5, 101.1, 101.7, 101.3, 101.9, 101.6, 102.1,
+              101.8, 102.3, 102.0, 102.5, 102.2]
     
     spike_detected, details = detect_volatility_spike(prices)
     
@@ -59,9 +61,10 @@ def test_detect_volatility_spike_normal():
 
 def test_detect_volatility_spike_detected():
     """Test detection with volatility spike."""
-    # Stable prices then large jump
-    prices = [100 + i * 0.5 for i in range(24)]
-    prices.append(120)  # Large spike
+    # Prices with realistic volatility then large jump
+    prices = [100, 100.5, 99.8, 100.3, 100.1, 100.6, 100.2, 100.8, 100.5, 101.0,
+              100.7, 101.2, 100.9, 101.5, 101.1, 101.7, 101.3, 101.9, 101.6, 102.1,
+              101.8, 102.3, 102.0, 102.5, 110.0]  # Large spike
     
     spike_detected, details = detect_volatility_spike(prices)
     

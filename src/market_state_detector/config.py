@@ -7,6 +7,7 @@ or provided programmatically.
 """
 
 import os
+import copy
 from typing import Any, Dict, Optional
 import yaml
 
@@ -50,7 +51,7 @@ class Config:
         Args:
             config_path: Path to YAML configuration file. If None, uses defaults.
         """
-        self.config = self.DEFAULT_CONFIG.copy()
+        self.config = copy.deepcopy(self.DEFAULT_CONFIG)
         
         if config_path and os.path.exists(config_path):
             self.load_from_file(config_path)

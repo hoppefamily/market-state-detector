@@ -13,7 +13,10 @@ def test_detector_initialization():
 
 def test_analyze_closes_only():
     """Test analysis with only closing prices."""
-    closes = [100 + i * 0.5 for i in range(25)]
+    # Prices with realistic volatility
+    closes = [100, 100.5, 99.8, 100.3, 100.1, 100.6, 100.2, 100.8, 100.5, 101.0,
+              100.7, 101.2, 100.9, 101.5, 101.1, 101.7, 101.3, 101.9, 101.6, 102.1,
+              101.8, 102.3, 102.0, 102.5, 102.2]
     
     detector = MarketStateDetector()
     results = detector.analyze(closes)
@@ -26,8 +29,10 @@ def test_analyze_closes_only():
 
 def test_analyze_with_spike():
     """Test that volatility spike is detected."""
-    closes = [100 + i * 0.5 for i in range(24)]
-    closes.append(120)  # Large spike
+    # Prices with realistic volatility then large jump
+    closes = [100, 100.5, 99.8, 100.3, 100.1, 100.6, 100.2, 100.8, 100.5, 101.0,
+              100.7, 101.2, 100.9, 101.5, 101.1, 101.7, 101.3, 101.9, 101.6, 102.1,
+              101.8, 102.3, 102.0, 102.5, 110.0]  # Large spike
     
     detector = MarketStateDetector()
     results = detector.analyze(closes)
@@ -66,7 +71,10 @@ def test_analyze_insufficient_data():
 
 def test_analyze_simple():
     """Test simple analysis method."""
-    closes = [100 + i * 0.5 for i in range(25)]
+    # Prices with realistic volatility
+    closes = [100, 100.5, 99.8, 100.3, 100.1, 100.6, 100.2, 100.8, 100.5, 101.0,
+              100.7, 101.2, 100.9, 101.5, 101.1, 101.7, 101.3, 101.9, 101.6, 102.1,
+              101.8, 102.3, 102.0, 102.5, 102.2]
     
     detector = MarketStateDetector()
     result = detector.analyze_simple(closes)
@@ -79,7 +87,10 @@ def test_detector_with_custom_config():
     config = Config()
     detector = MarketStateDetector(config)
     
-    closes = [100 + i * 0.5 for i in range(25)]
+    # Prices with realistic volatility
+    closes = [100, 100.5, 99.8, 100.3, 100.1, 100.6, 100.2, 100.8, 100.5, 101.0,
+              100.7, 101.2, 100.9, 101.5, 101.1, 101.7, 101.3, 101.9, 101.6, 102.1,
+              101.8, 102.3, 102.0, 102.5, 102.2]
     results = detector.analyze(closes)
     
     assert 'stage_1_detected' in results
