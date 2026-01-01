@@ -1,0 +1,31 @@
+# Default configuration for market state detector
+# This file shows all available configuration options with their defaults
+
+# Volatility spike detection
+volatility:
+  # Multiplier for historical volatility to trigger a spike alert
+  # E.g., 2.0 means recent return must be > 2x historical volatility
+  threshold_multiplier: 2.0
+  
+  # Number of days to use for calculating historical volatility baseline
+  lookback_period: 20
+
+# Price gap detection
+gaps:
+  # Minimum gap size as percentage to flag as significant
+  # E.g., 2.0 means gap must be >= 2% of previous close
+  threshold_percent: 2.0
+
+# Trading range analysis
+ranges:
+  # Percentage increase over average range to trigger alert
+  # E.g., 50.0 means current range must be 50% wider than average
+  threshold_percent: 50.0
+  
+  # Number of days to use for calculating average range
+  lookback_period: 20
+
+# General settings
+general:
+  # Minimum number of data points required for analysis
+  min_data_points: 21
