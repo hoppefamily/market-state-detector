@@ -13,6 +13,7 @@ Requirements:
     - API connections enabled
 """
 
+import logging
 import sys
 
 from market_state_detector import MarketStateDetector
@@ -23,6 +24,9 @@ except ImportError:
     print("ERROR: ib_insync library is not installed.")
     print("Install with: pip install ib_insync")
     sys.exit(1)
+
+# Suppress ib_insync informational messages (Read-Only mode warnings, timeouts)
+logging.getLogger('ib_insync').setLevel(logging.ERROR)
 
 # Get symbol from command line, default to SPY
 symbol = sys.argv[1].upper() if len(sys.argv) > 1 else 'SPY'
