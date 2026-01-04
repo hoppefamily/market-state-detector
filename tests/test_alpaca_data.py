@@ -6,7 +6,7 @@ initialization, symbol validation, error handling, and context manager interface
 """
 
 import os
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
