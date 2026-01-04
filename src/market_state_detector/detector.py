@@ -5,12 +5,16 @@ This module integrates volatility, gap, and range analysis to detect
 high-uncertainty market regimes (Stage 1 conditions).
 """
 
+import logging
 from typing import Dict, List, Optional
 
 from .config import Config
 from .gaps import detect_gap_from_prices
+from .market_context import MarketContextAnalyzer, format_context_message
 from .ranges import detect_wide_range
 from .volatility import detect_volatility_spike
+
+logger = logging.getLogger(__name__)
 
 
 class MarketStateDetector:
@@ -177,3 +181,110 @@ class MarketStateDetector:
         """
         result = self.analyze(closes)
         return result["stage_1_detected"]
+
+    def analyze_with_context(
+        self,
+        symbol: str,
+        closes: List[float],
+        highs: Optional[List[float]] = None,
+        lows: Optional[List[float]] = None,
+        opens: Optional[List[float]] = None,
+        fetcher=None,
+        include_context: bool = True
+    ) -> dict:
+        """
+        Analyze stock with market context detection.
+
+        This method performs standard Stage 1 detection and additionally
+        analyzes whether the detected volatility is market-wide, sector-specific,
+        or stock-specific by comparing against major benchmarks (SPY, QQQ, DIA).
+
+        Args:
+            symbol: Stock symbol being analyzed
+            closes: List of daily closing prices
+            highs: Optional list of daily high prices
+            lows: Optional list of daily low prices
+            opens: Optional list of daily open prices
+            fetcher: Optional data fetcher for benchmarks (e.g., AlpacaDataFetcher or IBKRDataFetcher)
+            include_context: Whether to include market context analysis (default: True).
+                Note: Market context is only analyzed when Stage 1 signals are detected in the stock.
+
+        Returns:
+            Dict with analysis results and market context information:
+            - All fields from standard analyze() method
+            - market_context: Dict with context analysis or None if unavailable/not requested/no Stage 1 detected
+                - type: 'broad_market', 'sector', 'stock_specific', or 'normal'
+                - benchmarks_affected: List of affected benchmark symbols
+                - correlation_score: Float between 0 and 1
+                - description: Human-readable description
+                - message: Formatted message for display
+
+        Example:
+            >>> from market_state_detector import MarketStateDetector
+            >>> from market_state_detector.alpaca_data import AlpacaDataFetcher
+            >>>
+            >>> # Fetch data for stock and analyze with context
+            >>> fetcher = AlpacaDataFetcher(api_key='...', secret_key='...')
+            >>> data = fetcher.fetch_daily_bars('AAPL', days=30)
+            >>>
+            >>> detector = MarketStateDetector()
+            >>> result = detector.analyze_with_context(
+            ...     symbol='AAPL',
+            ...     fetcher=fetcher,
+            ...     **data
+            ... )
+            >>>
+            >>> if result['stage_1_detected']:
+            ...     print(result['summary'])
+            ...     if result.get('market_context'):
+            ...         print(result['market_context']['message'])
+        """
+        # Run standard analysis
+        result = self.analyze(closes, highs, lows, opens)
+
+        # Return early if context not requested or not possible
+        if not include_context or not fetcher or not result['stage_1_detected']:
+            result['market_context'] = None
+            return result
+
+        # Analyze market context
+        try:
+            analyzer = MarketContextAnalyzer()
+
+            # Fetch benchmark data
+            benchmark_data = analyzer.get_benchmark_data(fetcher, days=len(closes))
+
+            # Analyze each benchmark for Stage 1 signals
+            benchmark_signals = {}
+            for bench_symbol, bench_data in benchmark_data.items():
+                if bench_data is None:
+                    benchmark_signals[bench_symbol] = []
+                    continue
+
+                try:
+                    bench_result = self.analyze(**bench_data)
+                    benchmark_signals[bench_symbol] = bench_result.get('flags', [])
+                except Exception as e:
+                    logger.warning(f"Failed to analyze {bench_symbol}: {e}")
+                    benchmark_signals[bench_symbol] = []
+
+            # Get market context
+            context = analyzer.analyze_context(
+                symbol=symbol,
+                stock_signals=result.get('flags', []),
+                benchmark_signals=benchmark_signals
+            )
+
+            result['market_context'] = {
+                'type': context.context_type,
+                'benchmarks_affected': context.benchmarks_affected,
+                'correlation_score': context.correlation_score,
+                'description': context.description,
+                'message': format_context_message(context)
+            }
+
+        except Exception as e:
+            logger.warning(f"Failed to analyze market context: {e}")
+            result['market_context'] = None
+
+        return result
