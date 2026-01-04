@@ -115,14 +115,14 @@ class AlpacaDataFetcher:
         # Check for futures indicators - common futures symbols
         # Matches patterns like ESH23, CLZ24, GCF25 (root + month + year)
         common_futures_roots = ['ES', 'CL', 'GC', 'NQ', 'YM', 'RTY', 'ZN', 'ZB', 'ZC', 'ZS', 'NG']
-        
+
         # Reject bare futures root symbols (e.g., 'ES', 'CL')
         if symbol_upper in common_futures_roots:
             raise ValueError(
                 f"Symbol '{symbol}' appears to be a futures contract. "
                 f"Alpaca only supports US equities."
             )
-        
+
         if len(symbol_upper) >= 4:
             # Check for known futures roots followed by month code and year
             for root in common_futures_roots:
@@ -134,7 +134,7 @@ class AlpacaDataFetcher:
                             f"Symbol '{symbol}' appears to be a futures contract. "
                             f"Alpaca only supports US equities."
                         )
-        
+
         # Check for "FUT" in symbol name
         if 'FUT' in symbol_upper:
             raise ValueError(
