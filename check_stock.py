@@ -13,7 +13,7 @@ Arguments:
     --broker       Data source: 'alpaca' (default) or 'ibkr'
 
 Requirements:
-    - For Alpaca: alpaca-py installed, API keys set (see ALPACA_QUICK_REFERENCE.md)
+    - For Alpaca: alpaca-py installed, API keys set (see docs/quick-reference/ALPACA_QUICK_REFERENCE.md)
     - For IBKR: ib_insync installed, TWS or IB Gateway running on port 4001, API enabled
 """
 
