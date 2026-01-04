@@ -28,15 +28,19 @@ class MarketStateDetector:
         config: Configuration object containing detection parameters
     """
     
-    def __init__(self, config: Optional[Config] = None):
+    def __init__(self, config: Optional[Config] = None, symbol: Optional[str] = None):
         """
         Initialize the market state detector.
         
         Args:
             config: Configuration object. If None, uses default configuration.
+            symbol: Stock symbol for stock-specific config (optional)
         """
-        self.config = config or Config()
-    
+        if config is not None:
+            self.config = config
+        else:
+            self.config = Config(symbol=symbol)
+
     def analyze(
         self,
         closes: List[float],
@@ -58,9 +62,6 @@ class MarketStateDetector:
                 - stage_1_detected: Boolean indicating if Stage 1 detected
                 - signals: Dict of individual signal results
                 - summary: Human-readable summary
-                
-        Raises:
-            ValueError: If insufficient data provided
         """
         min_points = self.config.get("general", "min_data_points")
         if len(closes) < min_points:
@@ -159,16 +160,3 @@ class MarketStateDetector:
             "flags": flags,
             "summary": summary
         }
-    
-    def analyze_simple(self, closes: List[float]) -> bool:
-        """
-        Simple analysis using only closing prices.
-        
-        Args:
-            closes: List of daily closing prices
-            
-        Returns:
-            True if Stage 1 detected, False otherwise
-        """
-        result = self.analyze(closes)
-        return result["stage_1_detected"]
