@@ -1,3 +1,20 @@
+STOCK_SPECIFIC_CONFIG = {
+    # Example: TSMC ADR (TSM) - higher volatility thresholds
+    "TSM": {
+        "volatility": {
+            "threshold_multiplier": 3.0,
+            "lookback_period": 15,
+        },
+        "ranges": {
+            "threshold_percent": 70.0,
+            "lookback_period": 15,
+        },
+        "gaps": {
+            "threshold_percent": 3.0,
+        },
+    },
+    # Add more stock-specific configs as needed
+}
 """
 Configuration management for market state detector.
 
@@ -65,7 +82,7 @@ class Config:
     def __init__(self, config_path: Optional[str] = None, symbol: Optional[str] = None):
         """
         Initialize configuration.
-        
+
         Args:
             config_path: Path to YAML configuration file. If None, uses defaults.
             symbol: Stock symbol for stock-specific config (optional)

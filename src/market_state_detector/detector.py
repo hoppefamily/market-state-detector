@@ -6,32 +6,33 @@ high-uncertainty market regimes (Stage 1 conditions).
 """
 
 from typing import Dict, List, Optional
+
 from .config import Config
-from .volatility import detect_volatility_spike
 from .gaps import detect_gap_from_prices
 from .ranges import detect_wide_range
+from .volatility import detect_volatility_spike
 
 
 class MarketStateDetector:
     """
     Detect high-uncertainty market regimes using price behavior analysis.
-    
+
     This class combines multiple simple metrics (volatility spikes, price gaps,
     and wide trading ranges) to identify potential Stage 1 (high-uncertainty)
     market conditions. It automates manual checks that traders might perform
     to avoid making decisions during unstable market conditions.
-    
+
     This is NOT a trading bot, NOT day trading, and NOT predictive. It simply
     flags when observable price behavior suggests increased uncertainty.
-    
+
     Attributes:
         config: Configuration object containing detection parameters
     """
-    
+
     def __init__(self, config: Optional[Config] = None, symbol: Optional[str] = None):
         """
         Initialize the market state detector.
-        
+
         Args:
             config: Configuration object. If None, uses default configuration.
             symbol: Stock symbol for stock-specific config (optional)
@@ -50,28 +51,34 @@ class MarketStateDetector:
     ) -> Dict:
         """
         Analyze market data to detect high-uncertainty regime.
-        
+
         Args:
             closes: List of daily closing prices (most recent last)
             highs: Optional list of daily high prices (most recent last)
             lows: Optional list of daily low prices (most recent last)
             opens: Optional list of daily opening prices (most recent last)
-            
+
         Returns:
             Dictionary containing:
                 - stage_1_detected: Boolean indicating if Stage 1 detected
                 - signals: Dict of individual signal results
                 - summary: Human-readable summary
+<<<<<<< Updated upstream
+=======
+
+        Raises:
+            ValueError: If insufficient data provided
+>>>>>>> Stashed changes
         """
         min_points = self.config.get("general", "min_data_points")
         if len(closes) < min_points:
             raise ValueError(
                 f"Need at least {min_points} closing prices for analysis"
             )
-        
+
         signals = {}
         flags = []
-        
+
         # Check volatility spike
         try:
             vol_config = self.config.get_section("volatility")
@@ -91,7 +98,7 @@ class MarketStateDetector:
                 "detected": False,
                 "error": str(e)
             }
-        
+
         # Check price gap (if open prices provided)
         if opens is not None and len(opens) == len(closes):
             try:
@@ -112,7 +119,7 @@ class MarketStateDetector:
                     "detected": False,
                     "error": str(e)
                 }
-        
+
         # Check wide range (if high/low prices provided)
         if highs is not None and lows is not None:
             if len(highs) == len(closes) and len(lows) == len(closes):
@@ -136,11 +143,11 @@ class MarketStateDetector:
                         "detected": False,
                         "error": str(e)
                     }
-        
+
         # Determine overall Stage 1 detection
         # Stage 1 is flagged if ANY signal is triggered
         stage_1_detected = len(flags) > 0
-        
+
         # Generate summary
         if stage_1_detected:
             summary = (
@@ -153,10 +160,26 @@ class MarketStateDetector:
                 "✓ No Stage 1 signals detected. "
                 "Market behavior appears within normal parameters."
             )
-        
+
         return {
             "stage_1_detected": stage_1_detected,
             "signals": signals,
             "flags": flags,
             "summary": summary
         }
+<<<<<<< Updated upstream
+=======
+
+    def analyze_simple(self, closes: List[float]) -> bool:
+        """
+        Simple analysis using only closing prices.
+
+        Args:
+            closes: List of daily closing prices
+
+        Returns:
+            True if Stage 1 detected, False otherwise
+        """
+        result = self.analyze(closes)
+        return result["stage_1_detected"]
+>>>>>>> Stashed changes

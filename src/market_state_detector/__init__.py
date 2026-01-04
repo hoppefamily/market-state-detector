@@ -17,10 +17,21 @@ __license__ = "GPL-3.0"
 from .config import Config
 from .detector import MarketStateDetector
 
+# Build __all__ list starting with core components
+__all__ = ["MarketStateDetector", "Config"]
+
 # Optional IBKR data fetching (requires ib_insync to be installed)
 try:
     from .ibkr_data import IBKRDataFetcher, fetch_ibkr_data
-    __all__ = ["MarketStateDetector", "Config", "IBKRDataFetcher", "fetch_ibkr_data"]
+    __all__.extend(["IBKRDataFetcher", "fetch_ibkr_data"])
 except ImportError:
     # ib_insync not installed, IBKR functionality not available
-    __all__ = ["MarketStateDetector", "Config"]
+    pass
+
+# Optional Alpaca data fetching (requires alpaca-py to be installed)
+try:
+    from .alpaca_data import AlpacaDataFetcher, fetch_alpaca_data
+    __all__.extend(["AlpacaDataFetcher", "fetch_alpaca_data"])
+except ImportError:
+    # alpaca-py not installed, Alpaca functionality not available
+    pass
