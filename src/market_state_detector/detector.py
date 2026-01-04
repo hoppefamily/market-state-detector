@@ -257,7 +257,7 @@ class MarketStateDetector:
             benchmark_signals = {}
             for bench_symbol, bench_data in benchmark_data.items():
                 if bench_data is None:
-                    benchmark_signals[bench_symbol] = None
+                    benchmark_signals[bench_symbol] = []
                     continue
 
                 try:
@@ -265,7 +265,7 @@ class MarketStateDetector:
                     benchmark_signals[bench_symbol] = bench_result.get('flags', [])
                 except Exception as e:
                     logger.warning(f"Failed to analyze {bench_symbol}: {e}")
-                    benchmark_signals[bench_symbol] = None
+                    benchmark_signals[bench_symbol] = []
 
             # Get market context
             context = analyzer.analyze_context(

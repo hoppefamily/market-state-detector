@@ -98,7 +98,7 @@ class MarketContextAnalyzer:
                 description = 'Tech sector volatility detected (QQQ affected, others stable)'
             elif bench == 'DIA':
                 context_type = 'sector'
-                description = 'Blue-chip sector volatility (DIA affected, others stable)'
+                description = 'Blue-chip sector volatility detected (DIA affected, others stable)'
             else:
                 context_type = 'sector'
                 description = f'Sector-specific volatility (only {bench} affected)'
