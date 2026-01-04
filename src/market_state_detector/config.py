@@ -1,20 +1,3 @@
-STOCK_SPECIFIC_CONFIG = {
-    # Example: TSMC ADR (TSM) - higher volatility thresholds
-    "TSM": {
-        "volatility": {
-            "threshold_multiplier": 3.0,
-            "lookback_period": 15,
-        },
-        "ranges": {
-            "threshold_percent": 70.0,
-            "lookback_period": 15,
-        },
-        "gaps": {
-            "threshold_percent": 3.0,
-        },
-    },
-    # Add more stock-specific configs as needed
-}
 """
 Configuration management for market state detector.
 

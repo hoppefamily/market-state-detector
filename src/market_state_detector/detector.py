@@ -63,12 +63,9 @@ class MarketStateDetector:
                 - stage_1_detected: Boolean indicating if Stage 1 detected
                 - signals: Dict of individual signal results
                 - summary: Human-readable summary
-<<<<<<< Updated upstream
-=======
 
         Raises:
             ValueError: If insufficient data provided
->>>>>>> Stashed changes
         """
         min_points = self.config.get("general", "min_data_points")
         if len(closes) < min_points:
@@ -167,8 +164,6 @@ class MarketStateDetector:
             "flags": flags,
             "summary": summary
         }
-<<<<<<< Updated upstream
-=======
 
     def analyze_simple(self, closes: List[float]) -> bool:
         """
@@ -182,4 +177,3 @@ class MarketStateDetector:
         """
         result = self.analyze(closes)
         return result["stage_1_detected"]
->>>>>>> Stashed changes

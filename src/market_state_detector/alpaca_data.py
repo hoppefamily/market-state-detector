@@ -224,12 +224,6 @@ class AlpacaDataFetcher:
                 f"(Response type: {type(bars_response).__name__})"
             )
 
-        if not bars:
-            raise ValueError(
-                f"No bars returned for '{symbol}'. "
-                f"Symbol may not have trading data for the requested period."
-            )
-
         # Sort bars by timestamp (should already be sorted, but ensure it)
         bars_list = sorted(bars, key=lambda x: x.timestamp)
 

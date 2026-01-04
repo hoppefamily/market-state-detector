@@ -111,7 +111,7 @@ def test_connection():
 
     try:
         print("Initializing Alpaca client...")
-        fetcher = AlpacaDataFetcher(paper=True)
+        AlpacaDataFetcher(paper=True)
         print("✓ Alpaca client initialized successfully")
         print("  Endpoint: Paper trading (safe for testing)")
         print()
