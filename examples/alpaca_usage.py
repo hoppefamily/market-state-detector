@@ -218,7 +218,7 @@ def example_error_handling():
     invalid_symbols = [
         'EUR/USD',    # Forex (not supported)
         'EURUSD',     # Forex (not supported)
-        'ES',         # Futures (not supported)
+        'ESH24',      # Futures (not supported)
         'INVALIDXYZ'  # Invalid stock
     ]
 

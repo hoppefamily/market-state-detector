@@ -7,7 +7,7 @@ initialization, symbol validation, error handling, and context manager interface
 
 import os
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch, MagicMock
 
 
 class TestAlpacaDataFetcher:
@@ -182,8 +182,9 @@ class TestAlpacaDataFetcher:
             # Access client
             client = fetcher._get_client()
             
-            # Now client should be initialized
+            # Now client should be initialized and match the returned client
             assert fetcher.client is not None
+            assert client is fetcher.client
             mock_client_class.assert_called_once_with(
                 api_key='test_key',
                 secret_key='test_secret'
