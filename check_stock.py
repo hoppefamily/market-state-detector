@@ -36,7 +36,7 @@ def main():
 
     if broker == 'ibkr':
         try:
-            from market_state_detector.ibkr_data import fetch_ibkr_data
+            from market_state_detector.ibkr_data import IBKRDataFetcher
         except ImportError:
             print("ERROR: ib_insync library is not installed.")
             print("Install with: pip install ib_insync")
@@ -45,7 +45,8 @@ def main():
         logging.getLogger('ib_insync').setLevel(logging.ERROR)
         print(f"\nFetching {symbol} data from IBKR...")
         try:
-            data = fetch_ibkr_data(symbol, days=30, port=4001)
+            fetcher = IBKRDataFetcher(port=4001)
+            data = fetcher.fetch_daily_bars(symbol, days=30)
         except Exception as e:
             print(f"\nERROR: {e}")
             print("\nMake sure:")
@@ -55,14 +56,15 @@ def main():
             sys.exit(2)
     else:
         try:
-            from market_state_detector.alpaca_data import fetch_alpaca_data
+            from market_state_detector.alpaca_data import AlpacaDataFetcher
         except ImportError:
             print("ERROR: alpaca-py library is not installed.")
             print("Install with: pip install alpaca-py")
             sys.exit(1)
         print(f"\nFetching {symbol} data from Alpaca...")
         try:
-            data = fetch_alpaca_data(symbol, days=30, paper=True)
+            fetcher = AlpacaDataFetcher(paper=True)
+            data = fetcher.fetch_daily_bars(symbol, days=30)
         except Exception as e:
             print(f"\nERROR: {e}")
             print("\nMake sure:")
@@ -84,11 +86,11 @@ def main():
     print(f"{symbol} - MARKET STATE CHECK")
     print(f"{'='*60}")
     print(f"\n{results['summary']}")
-    
+
     # Print market context if available
     if results.get('market_context') and results['market_context']['message']:
         print(results['market_context']['message'])
-    
+
     print(f"\n{'='*60}\n")
 
     # Exit code: 0 if normal, 1 if Stage 1 detected
