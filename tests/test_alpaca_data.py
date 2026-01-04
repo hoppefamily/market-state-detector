@@ -161,35 +161,29 @@ class TestAlpacaDataFetcher:
             assert fetcher is not None
             assert isinstance(fetcher, AlpacaDataFetcher)
 
-    @patch('market_state_detector.alpaca_data.StockHistoricalDataClient')
+    @patch('alpaca.data.historical.StockHistoricalDataClient')
     def test_get_client_lazy_initialization(self, mock_client_class):
         """Test that client is initialized lazily."""
         from market_state_detector.alpaca_data import AlpacaDataFetcher
 
-        # Mock the alpaca imports
-        with patch.dict('sys.modules', {
-            'alpaca': MagicMock(),
-            'alpaca.data': MagicMock(),
-            'alpaca.data.historical': MagicMock(StockHistoricalDataClient=mock_client_class)
-        }):
-            fetcher = AlpacaDataFetcher(
-                api_key='test_key',
-                secret_key='test_secret'
-            )
+        fetcher = AlpacaDataFetcher(
+            api_key='test_key',
+            secret_key='test_secret'
+        )
 
-            # Client should not be initialized yet
-            assert fetcher.client is None
+        # Client should not be initialized yet
+        assert fetcher.client is None
 
-            # Access client
-            client = fetcher._get_client()
+        # Access client
+        client = fetcher._get_client()
 
-            # Now client should be initialized and match the returned client
-            assert fetcher.client is not None
-            assert client is fetcher.client
-            mock_client_class.assert_called_once_with(
-                api_key='test_key',
-                secret_key='test_secret'
-            )
+        # Now client should be initialized and match the returned client
+        assert fetcher.client is not None
+        assert client is not None
+        mock_client_class.assert_called_once_with(
+            api_key='test_key',
+            secret_key='test_secret'
+        )
 
     def test_fetch_daily_bars_without_credentials_fails(self):
         """Test that fetch_daily_bars fails without valid credentials."""
