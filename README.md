@@ -53,7 +53,7 @@ python check_stock.py                     # Defaults to SPY
 AAPL - MARKET STATE CHECK
 ============================================================
 
-✓ No Stage 1 signals detected. Market behavior appears 
+✓ No Stage 1 signals detected. Market behavior appears
   within normal parameters.
 
 # (If Stage 1 triggers, you'll also see a market context message,
@@ -63,7 +63,7 @@ AAPL - MARKET STATE CHECK
 ```
 
 **Requirements:**
-- Alpaca (default): `pip install alpaca-py` + `ALPACA_API_KEY` / `ALPACA_SECRET_KEY` set (see [ALPACA_QUICK_REFERENCE.md](ALPACA_QUICK_REFERENCE.md))
+- Alpaca (default): `pip install alpaca-py` + `ALPACA_API_KEY` / `ALPACA_SECRET_KEY` set (see [docs/quick-reference/ALPACA_QUICK_REFERENCE.md](docs/quick-reference/ALPACA_QUICK_REFERENCE.md))
 - IBKR (`--broker ibkr`): IB Gateway or TWS running + `pip install ib_insync` + API connections enabled (see [IBKR Setup Guide](IBKR_SETUP_CHECKLIST.md))
 
 **Exit codes:** 0 (normal), 1 (Stage 1 detected), 2 (error) - useful for scripting.

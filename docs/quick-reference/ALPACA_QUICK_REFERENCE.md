@@ -362,9 +362,9 @@ with AlpacaDataFetcher(paper=True) as fetcher:
 
 ## Resources
 
-- **Full Guide:** [docs/ALPACA_INTEGRATION.md](docs/ALPACA_INTEGRATION.md)
-- **Examples:** [examples/alpaca_usage.py](examples/alpaca_usage.py)
-- **Connection Test:** `python check_alpaca_connection.py`
+- **Full Guide:** [docs/ALPACA_INTEGRATION.md](../ALPACA_INTEGRATION.md)
+- **Examples:** [examples/alpaca_usage.py](../../examples/alpaca_usage.py)
+- **Connection Test:** [check_alpaca_connection.py](../../check_alpaca_connection.py)
 - **Alpaca Docs:** [https://alpaca.markets/docs/](https://alpaca.markets/docs/)
 - **alpaca-py GitHub:** [https://github.com/alpacahq/alpaca-py](https://github.com/alpacahq/alpaca-py)
 

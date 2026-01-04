@@ -540,7 +540,7 @@ fetch_alpaca_data('SPY')       # US ETF
 
 - **Alpaca Documentation:** [https://alpaca.markets/docs/](https://alpaca.markets/docs/)
 - **alpaca-py GitHub:** [https://github.com/alpacahq/alpaca-py](https://github.com/alpacahq/alpaca-py)
-- **Quick Reference:** See `ALPACA_QUICK_REFERENCE.md`
+- **Quick Reference:** See [quick-reference/ALPACA_QUICK_REFERENCE.md](quick-reference/ALPACA_QUICK_REFERENCE.md)
 - **Examples:** See `examples/alpaca_usage.py`
 - **Connection Test:** Run `python check_alpaca_connection.py`
 

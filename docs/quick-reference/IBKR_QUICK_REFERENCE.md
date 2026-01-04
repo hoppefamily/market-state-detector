@@ -93,9 +93,9 @@ All arrays same length, chronologically ordered (oldest first).
 
 ## Examples Location
 
-- Basic usage: `examples/ibkr_usage.py`
-- Connection test: `check_ibkr_connection.py`
-- Full docs: `docs/IBKR_INTEGRATION.md`
+- Basic usage: [examples/ibkr_usage.py](../../examples/ibkr_usage.py)
+- Connection test: [check_ibkr_connection.py](../../check_ibkr_connection.py)
+- Full docs: [docs/IBKR_INTEGRATION.md](../IBKR_INTEGRATION.md)
 
 ## API Reference
 
