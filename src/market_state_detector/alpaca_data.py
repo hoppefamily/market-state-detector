@@ -15,10 +15,13 @@ Important: Alpaca only supports US equities. Forex, futures, and international
 stocks are not available.
 """
 
+import logging
 import os
 import re
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class AlpacaDataFetcher:
@@ -54,8 +57,11 @@ class AlpacaDataFetcher:
         Args:
             api_key: Alpaca API key (or set ALPACA_API_KEY environment variable)
             secret_key: Alpaca secret key (or set ALPACA_SECRET_KEY environment variable)
-            paper: Use paper trading endpoint (default: True for safety)
-                   Set to False for live trading data
+            paper: Paper trading indicator (default: True). Note: This parameter
+                   is kept for API consistency but does not affect data fetching.
+                   Historical data access uses the same endpoint for both paper
+                   and live keys. The paper/live distinction matters only for
+                   trading operations.
 
         Note:
             Paper trading is recommended for testing and development.
@@ -98,24 +104,36 @@ class AlpacaDataFetcher:
         # Check for common forex currency codes (6 chars like EURUSD)
         if len(symbol_upper) == 6 and symbol_upper.isalpha():
             common_currencies = ['EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'CAD', 'NZD', 'USD']
-            if any(symbol_upper.startswith(curr) for curr in common_currencies):
+            # Check if both first 3 and last 3 chars are currency codes
+            first_three = symbol_upper[:3]
+            last_three = symbol_upper[3:]
+            if first_three in common_currencies and last_three in common_currencies:
                 raise ValueError(
                     f"Symbol '{symbol}' appears to be a forex pair. "
                     f"Alpaca only supports US equities."
                 )
 
-        # Check for futures indicators
-        futures_patterns = [
-            r'[A-Z]+\d{2}',  # ES22, CL23, etc.
-            r'.*FUT.*',       # Contains FUT
-            r'.*\d{4}$',      # Ends with year like 2024
-        ]
-        for pattern in futures_patterns:
-            if re.match(pattern, symbol_upper) and len(symbol_upper) > 5:
-                raise ValueError(
-                    f"Symbol '{symbol}' appears to be a futures contract. "
-                    f"Alpaca only supports US equities."
-                )
+        # Check for futures indicators - common futures symbols
+        # Matches patterns like ESH23, CLZ24, GCF25 (root + month + year)
+        common_futures_roots = ['ES', 'CL', 'GC', 'NQ', 'YM', 'RTY', 'ZN', 'ZB', 'ZC', 'ZS', 'NG']
+        if len(symbol_upper) >= 4:
+            # Check for known futures roots followed by month code and year
+            for root in common_futures_roots:
+                if symbol_upper.startswith(root) and len(symbol_upper) == len(root) + 3:
+                    # Check if follows pattern: ROOT + letter (month) + 2 digits (year)
+                    remainder = symbol_upper[len(root):]
+                    if len(remainder) == 3 and remainder[0].isalpha() and remainder[1:].isdigit():
+                        raise ValueError(
+                            f"Symbol '{symbol}' appears to be a futures contract. "
+                            f"Alpaca only supports US equities."
+                        )
+        
+        # Check for "FUT" in symbol name
+        if 'FUT' in symbol_upper:
+            raise ValueError(
+                f"Symbol '{symbol}' appears to be a futures contract. "
+                f"Alpaca only supports US equities."
+            )
 
     def _get_client(self):
         """
@@ -231,8 +249,8 @@ class AlpacaDataFetcher:
         bars_list = bars_list[-days:] if len(bars_list) > days else bars_list
 
         if len(bars_list) < days:
-            print(
-                f"Note: Only {len(bars_list)} bars available for '{symbol}' "
+            logger.info(
+                f"Only {len(bars_list)} bars available for '{symbol}' "
                 f"(requested {days}). This is normal for Alpaca free tier."
             )
 
@@ -252,7 +270,7 @@ class AlpacaDataFetcher:
     def fetch_multiple_symbols(
         self,
         symbols: List[str],
-        days: int = 30,
+        days: int = 25,
         end_date: Optional[datetime] = None
     ) -> Dict[str, Dict[str, List[float]]]:
         """
@@ -283,7 +301,7 @@ class AlpacaDataFetcher:
                     end_date=end_date
                 )
             except Exception as e:
-                print(f"Warning: Failed to fetch data for {symbol}: {str(e)}")
+                logger.warning(f"Failed to fetch data for {symbol}: {str(e)}")
                 results[symbol] = None
 
         return results

@@ -195,12 +195,11 @@ def example_paper_vs_live():
             data = fetcher.fetch_daily_bars('AAPL', days=5)
             print(f"   Retrieved {len(data['closes'])} bars from paper trading")
 
-        # Live trading (requires live API keys)
-        # Uncomment only if you have live API keys
-        # print("\n2. Using live trading endpoint:")
-        # with AlpacaDataFetcher(paper=False) as fetcher:
-        #     data = fetcher.fetch_daily_bars('AAPL', days=5)
-        #     print(f"   Retrieved {len(data['closes'])} bars from live trading")
+        # Live trading example (requires live API keys):
+        # To test with live trading keys, create a separate script that sets
+        # paper=False and uses your live API credentials instead of paper keys.
+        # Note: Live and paper use the same data endpoint, but live keys are
+        # required for actual trading operations.
 
     except Exception as e:
         print(f"Error: {e}")
