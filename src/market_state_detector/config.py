@@ -65,7 +65,7 @@ class Config:
     def __init__(self, config_path: Optional[str] = None, symbol: Optional[str] = None):
         """
         Initialize configuration.
-        
+
         Args:
             config_path: Path to YAML configuration file. If None, uses defaults.
             symbol: Stock symbol for stock-specific config (optional)

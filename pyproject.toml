@@ -43,3 +43,9 @@ dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
 ]
+ibkr = [
+    "ib_insync>=0.9.86",
+]
+alpaca = [
+    "alpaca-py>=0.17.0",
+]
