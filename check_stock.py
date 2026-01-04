@@ -70,16 +70,26 @@ def main():
             print("  - Symbol is valid (US stocks/ETFs only)")
             sys.exit(2)
 
-    # Analyze
+    # Analyze with market context
     detector = MarketStateDetector(symbol=symbol)
-    results = detector.analyze(**data)
+    results = detector.analyze_with_context(
+        symbol=symbol,
+        fetcher=fetcher,
+        include_context=True,
+        **data
+    )
 
     # Print result
     print(f"\n{'='*60}")
     print(f"{symbol} - MARKET STATE CHECK")
     print(f"{'='*60}")
-    print(f"\n{results['summary']}\n")
-    print(f"{'='*60}\n")
+    print(f"\n{results['summary']}")
+    
+    # Print market context if available
+    if results.get('market_context') and results['market_context']['message']:
+        print(results['market_context']['message'])
+    
+    print(f"\n{'='*60}\n")
 
     # Exit code: 0 if normal, 1 if Stage 1 detected
     sys.exit(1 if results['stage_1_detected'] else 0)
