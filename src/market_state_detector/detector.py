@@ -206,12 +206,13 @@ class MarketStateDetector:
             lows: Optional list of daily low prices
             opens: Optional list of daily open prices
             fetcher: Optional data fetcher for benchmarks (e.g., AlpacaDataFetcher or IBKRDataFetcher)
-            include_context: Whether to include market context analysis (default: True)
+            include_context: Whether to include market context analysis (default: True).
+                Note: Market context is only analyzed when Stage 1 signals are detected in the stock.
 
         Returns:
             Dict with analysis results and market context information:
             - All fields from standard analyze() method
-            - market_context: Dict with context analysis or None if unavailable
+            - market_context: Dict with context analysis or None if unavailable/not requested/no Stage 1 detected
                 - type: 'broad_market', 'sector', 'stock_specific', or 'normal'
                 - benchmarks_affected: List of affected benchmark symbols
                 - correlation_score: Float between 0 and 1
@@ -220,7 +221,7 @@ class MarketStateDetector:
 
         Example:
             >>> from market_state_detector import MarketStateDetector
-            >>> from market_state_detector.alpaca_data import fetch_alpaca_data
+            >>> from market_state_detector.alpaca_data import AlpacaDataFetcher
             >>>
             >>> # Fetch data for stock and analyze with context
             >>> fetcher = AlpacaDataFetcher(api_key='...', secret_key='...')

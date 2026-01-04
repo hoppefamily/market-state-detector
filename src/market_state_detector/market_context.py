@@ -52,7 +52,7 @@ class MarketContextAnalyzer:
         self,
         symbol: str,
         stock_signals: List[str],
-        benchmark_signals: Dict[str, List[str]]
+        benchmark_signals: Dict[str, Optional[List[str]]]
     ) -> MarketContext:
         """
         Analyze whether volatility is market-wide, sector, or stock-specific.
@@ -129,7 +129,7 @@ class MarketContextAnalyzer:
             try:
                 data = fetcher.fetch_daily_bars(benchmark, days=days)
                 benchmark_data[benchmark] = data
-                logger.info(f"Fetched {benchmark} benchmark data ({len(data.get('close', []))} bars)")
+                logger.info(f"Fetched {benchmark} benchmark data ({len(data.get('closes', []))} bars)")
             except Exception as e:
                 logger.warning(f"Failed to fetch {benchmark} data: {e}")
                 benchmark_data[benchmark] = None

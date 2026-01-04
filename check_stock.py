@@ -46,6 +46,7 @@ def main():
         print(f"\nFetching {symbol} data from IBKR...")
         try:
             fetcher = IBKRDataFetcher(port=4001)
+            fetcher.connect()
             data = fetcher.fetch_daily_bars(symbol, days=30)
         except Exception as e:
             print(f"\nERROR: {e}")
