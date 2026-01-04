@@ -9,7 +9,9 @@ A Python tool that detects high-uncertainty market regimes (Stage 1) using simpl
 - **Volatility Spike Detection**: Identifies abnormal volatility by comparing recent price movements to historical averages
 - **Price Gap Detection**: Flags significant overnight gaps that may indicate market stress
 - **Wide Range Detection**: Detects abnormally wide trading ranges suggesting increased uncertainty
+- **Market Context Detection**: When Stage 1 triggers, compares against SPY/QQQ/DIA to classify conditions as broad market, sector-specific, or stock-specific
 - **IBKR/CapTrader Integration**: Optional data fetching from Interactive Brokers (see [IBKR Integration Guide](docs/IBKR_INTEGRATION.md))
+- **Alpaca Integration**: Optional data fetching from Alpaca (see [Alpaca Integration Guide](docs/ALPACA_INTEGRATION.md))
 - **Modular Design**: Each detection method is independent and can be used separately
 - **Config-Driven**: Easily customize detection thresholds via YAML configuration
 - **CLI Support**: Command-line interface for analyzing CSV data files
@@ -39,10 +41,10 @@ pip install ib_insync
 **The simplest way to use the detector** - check stocks before making trading decisions:
 
 ```bash
-python check_stock.py SPY     # Check market
-python check_stock.py AAPL    # Check your positions
-python check_stock.py TSLA    # Another position
-python check_stock.py         # Defaults to SPY
+python check_stock.py SPY                 # Check market (Alpaca default)
+python check_stock.py AAPL                # Check your positions
+python check_stock.py TSLA --broker ibkr  # Use IBKR instead of Alpaca
+python check_stock.py                     # Defaults to SPY
 ```
 
 **Output example:**
@@ -54,13 +56,15 @@ AAPL - MARKET STATE CHECK
 ✓ No Stage 1 signals detected. Market behavior appears 
   within normal parameters.
 
+# (If Stage 1 triggers, you'll also see a market context message,
+#  e.g. broad-market vs sector vs stock-specific.)
+
 ============================================================
 ```
 
 **Requirements:**
-- IB Gateway or TWS running
-- `pip install ib_insync`
-- API connections enabled (see [IBKR Setup Guide](IBKR_SETUP_CHECKLIST.md))
+- Alpaca (default): `pip install alpaca-py` + `ALPACA_API_KEY` / `ALPACA_SECRET_KEY` set (see [ALPACA_QUICK_REFERENCE.md](ALPACA_QUICK_REFERENCE.md))
+- IBKR (`--broker ibkr`): IB Gateway or TWS running + `pip install ib_insync` + API connections enabled (see [IBKR Setup Guide](IBKR_SETUP_CHECKLIST.md))
 
 **Exit codes:** 0 (normal), 1 (Stage 1 detected), 2 (error) - useful for scripting.
 
@@ -164,6 +168,25 @@ detector = MarketStateDetector()
 results = detector.analyze(**data)
 ```
 
+### Market Context (Optional)
+
+If you pass a fetcher into `analyze_with_context()`, the detector will compare the stock's Stage 1 signals against SPY/QQQ/DIA to help explain whether the volatility looks market-wide, sector-specific, or stock-specific.
+
+```python
+from market_state_detector import MarketStateDetector
+from market_state_detector.alpaca_data import AlpacaDataFetcher
+
+with AlpacaDataFetcher(paper=True) as fetcher:
+  data = fetcher.fetch_daily_bars('AAPL', days=30)
+
+  detector = MarketStateDetector(symbol='AAPL')
+  results = detector.analyze_with_context(symbol='AAPL', fetcher=fetcher, **data)
+
+  print(results['summary'])
+  if results.get('market_context'):
+    print(results['market_context']['message'])
+```
+
 **Requirements for IBKR integration:**
 1. Install ib_insync: `pip install ib_insync`
 2. Have TWS (Trader Workstation) or IB Gateway running
@@ -237,15 +260,19 @@ market-state-detector/
 │       ├── volatility.py        # Volatility spike detection
 │       ├── gaps.py              # Price gap detection
 │       ├── ranges.py            # Wide range detection
+│       ├── market_context.py     # Market context classification (SPY/QQQ/DIA)
+│       ├── alpaca_data.py        # Optional Alpaca data fetching
 │       ├── ibkr_data.py         # Optional IBKR data fetching
 │       ├── cli.py               # Command-line interface
 │       └── __main__.py          # Module entry point
+├── check_stock.py                # Quick daily stock check script
 ├── tests/                       # Test suite
 │   ├── test_detector.py
 │   ├── test_volatility.py
 │   ├── test_gaps.py
 │   ├── test_ranges.py
 │   ├── test_config.py
+│   ├── test_market_context.py
 │   └── conftest.py
 ├── examples/                    # Usage examples
 │   ├── basic_usage.py
