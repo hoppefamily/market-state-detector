@@ -64,7 +64,8 @@ class MarketStateDetector:
 
         Returns:
             Dictionary containing:
-                - stage_1_detected: Boolean indicating if Stage 1 detected
+                - price_uncertainty_state: "ON" if unstable, "OFF" if normal
+                - stage_1_detected: Boolean (backward compat alias)
                 - signals: Dict of individual signal results
                 - summary: Human-readable summary
 
@@ -145,25 +146,26 @@ class MarketStateDetector:
                         "error": str(e)
                     }
 
-        # Determine overall Stage 1 detection
-        # Stage 1 is flagged if ANY signal is triggered
-        stage_1_detected = len(flags) > 0
+        # Determine overall price uncertainty detection
+        # Price uncertainty is flagged if ANY signal is triggered
+        price_uncertainty_state = "ON" if len(flags) > 0 else "OFF"
 
         # Generate summary
-        if stage_1_detected:
+        if price_uncertainty_state == "ON":
             summary = (
-                f"⚠️  HIGH UNCERTAINTY DETECTED - Stage 1 regime likely. "
+                f"⚠️  HIGH UNCERTAINTY DETECTED - Price regime unstable. "
                 f"Signals: {', '.join(flags)}. "
                 f"Consider avoiding new positions until conditions stabilize."
             )
         else:
             summary = (
-                "✓ No Stage 1 signals detected. "
-                "Market behavior appears within normal parameters."
+                "✓ No price uncertainty signals detected. "
+                "Price behavior appears within normal parameters."
             )
 
         return {
-            "stage_1_detected": stage_1_detected,
+            "price_uncertainty_state": price_uncertainty_state,
+            "stage_1_detected": price_uncertainty_state == "ON",  # backward compat alias
             "signals": signals,
             "flags": flags,
             "summary": summary
@@ -177,10 +179,10 @@ class MarketStateDetector:
             closes: List of daily closing prices
 
         Returns:
-            True if Stage 1 detected, False otherwise
+            True if price uncertainty detected, False otherwise
         """
         result = self.analyze(closes)
-        return result["stage_1_detected"]
+        return result["price_uncertainty_state"] == "ON"
 
     def analyze_with_context(
         self,
@@ -243,7 +245,7 @@ class MarketStateDetector:
         result = self.analyze(closes, highs, lows, opens)
 
         # Return early if context not requested or not possible
-        if not include_context or not fetcher or not result['stage_1_detected']:
+        if not include_context or not fetcher or result['price_uncertainty_state'] != 'ON':
             result['market_context'] = None
             return result
 
