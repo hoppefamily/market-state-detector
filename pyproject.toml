@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "market-state-detector"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tool to detect high-uncertainty market regimes using simple price behavior metrics"
 readme = "README.md"
 license = {text = "Apache-2.0 OR GPL-3.0-or-later"}
