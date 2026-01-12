@@ -346,7 +346,12 @@ Contributions are welcome! Please feel free to submit issues or pull requests.
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+This project is dual-licensed under your choice of:
+
+- Apache License 2.0 (Apache-2.0) - see [LICENSE-APACHE-2.0](LICENSE-APACHE-2.0)
+- GNU General Public License v3.0 or later (GPL-3.0-or-later) - see [LICENSE-GPL-3.0](LICENSE-GPL-3.0)
+
+The [LICENSE](LICENSE) file summarizes this dual-license.
 
 ## Acknowledgments
 
