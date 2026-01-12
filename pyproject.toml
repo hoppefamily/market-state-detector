@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "market-state-detector"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tool to detect high-uncertainty market regimes using simple price behavior metrics"
 readme = "README.md"
-license = {text = "GPL-3.0"}
+license = {text = "Apache-2.0 OR GPL-3.0-or-later"}
 authors = [
     {name = "market-state-detector contributors"}
 ]
@@ -18,7 +18,8 @@ dependencies = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Financial and Insurance Industry",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "License :: OSI Approved :: Apache Software License",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -37,6 +38,13 @@ market-state-detector = "market_state_detector.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools]
+license-files = [
+    "LICENSE",
+    "LICENSE-APACHE-2.0",
+    "LICENSE-GPL-3.0",
+]
 
 [project.optional-dependencies]
 dev = [

@@ -10,9 +10,9 @@ manual checks to improve consistency and reduce human error in identifying
 uncertain market conditions.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "market-state-detector contributors"
-__license__ = "GPL-3.0"
+__license__ = "Apache-2.0 OR GPL-3.0-or-later"
 
 from .config import Config
 from .detector import MarketStateDetector

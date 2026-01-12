@@ -1,5 +1,7 @@
 include README.md
 include LICENSE
+include LICENSE-APACHE-2.0
+include LICENSE-GPL-3.0
 include requirements.txt
 include pyproject.toml
 recursive-include config *.yaml
