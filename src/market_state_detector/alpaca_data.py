@@ -151,7 +151,7 @@ class AlpacaDataFetcher:
         """
         if self.client is None:
             try:
-                from alpaca.data.historical import StockHistoricalDataClient
+                from alpaca.data import StockHistoricalDataClient
             except ImportError:
                 raise ImportError(
                     "alpaca-py library is required for Alpaca data fetching. "
